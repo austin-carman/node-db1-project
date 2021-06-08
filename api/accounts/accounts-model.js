@@ -12,16 +12,16 @@ const getById = async (id) => {
     return result
 }
 
-const create = async ({ name, budget }) => {
+const create = async (account) => {
   const [id] = await db('accounts')
-  .insert({ name, budget })
+  .insert(account)
   return getById(id)
 }
 
 const updateById = async (id, account) => {
   await db('accounts')
   .where('id', id)
-  .update({name: account.name, budget: account.budget})
+  .update(account)
   return getById(id)
 }
 

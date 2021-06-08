@@ -2,23 +2,24 @@ const Accounts = require('./accounts-model');
 
 
 const checkAccountPayload = (req, res, next) => { 
-  if (!req.body.name || !('budget' in req.body)) {
+  const { name, budget } = req.body
+  if (name == undefined || !('budget' in req.body)) { //which was is best to check if name/budget are in the req.body
     res.status(400).json({ 
       message: 'name and budget are required' 
     });
-  } else if (typeof(req.body.name) != 'string') {
+  } else if (typeof name !== 'string') {
     res.status(400).json({ 
       message: 'name of account must be a string' 
     });
-  } else if (req.body.name.trim().length < 3 || req .body.name.trim().length > 100) {
+  } else if (name.trim().length < 3 || name.trim().length > 100) {
     res.status(400).json({ 
       message: 'name of account must be be between 3 and 100' 
     });
-  } else if (typeof(req.body.budget) != 'number') {
+  } else if (typeof budget !== 'number' || isNaN(budget)) { // understand isNAN(budget)
     res.status(400).json({ 
       message: 'budget of account must be a number' 
     });
-  } else if (req.body.budget < 0 || req.body.budget > 1000000) {
+  } else if (budget < 0 || budget > 1000000) {
     res.status(400).json({ 
       message: "budget of account is too large or too small" 
     })
@@ -39,6 +40,7 @@ const checkAccountNameUnique = (req, res, next) => {
         next()
       }
     })
+    // you could also do another db here or create a new model for it. Searching the database for any names that match the req body name
 }
 
 const checkAccountId = (req, res, next) => {
